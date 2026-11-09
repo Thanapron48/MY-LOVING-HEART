@@ -203,7 +203,7 @@
 
     <!-- หน้าต่างป๊อปอัปสำหรับปรับแต่งข้อมูล -->
     <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-zinc-900 border border-pink-500/30 rounded-2xl max-w-2xl w-full p-6 shadow-2xl shadow-pink-600/20 relative animate-[fadeIn_0.3s_ease-out] flex flex-col md:flex-row gap-6">
+        <div class="bg-zinc-900 border border-pink-500/30 rounded-2xl max-w-4xl w-full p-6 shadow-2xl shadow-pink-600/20 relative animate-[fadeIn_0.3s_ease-out] flex flex-col md:flex-row gap-6 max-h-[90vh] overflow-y-auto">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-lg z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -237,26 +237,42 @@
                         <textarea id="inputNamesList" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors resize-none">ตะวัน, ดวงใจ, My Love, Forever, You & Me, คนดี, ที่รัก, รักที่สุด, Soulmate, Baby, Honey, My Heart, ดวงหทัย, หวานใจ, พรหมลิขิต, แฟน, ความสุข, รอยยิ้ม, ไออุ่น, นิรันดร์, ดวงชีวัน, เจ้าหญิง, เจ้าชาย, ดวงแก้ว, ดวงฤทัย, น่ารัก, กอดอุ่น, ดวงกมล, ซือปู, องุ่น, มิว, โอม</textarea>
                     </div>
                 </div>
+
+                <div class="pt-2">
+                    <button onclick="applyCustomNames()" class="w-full py-2.5 bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white rounded-xl text-sm font-medium shadow-md shadow-pink-600/30 transition-all">
+                        บันทึก & สร้างหัวใจใหม่
+                    </button>
+                </div>
             </div>
 
-            <!-- หน้าต่างสร้าง QR Code ด้านขวา -->
-            <div class="w-full md:w-64 bg-zinc-950/80 border border-pink-500/20 rounded-xl p-4 flex flex-col items-center justify-between">
-                <div class="text-center w-full">
-                    <h4 class="text-xs font-semibold text-pink-300 mb-2 uppercase tracking-wider">QR Code สำหรับแชร์</h4>
-                    <div class="bg-white p-3 rounded-xl inline-block shadow-inner mb-3">
-                        <!-- Canvas สำหรับเรนเดอร์ QR Code -->
-                        <canvas id="qrCodeCanvas" width="140" height="140" class="block"></canvas>
+            <!-- หน้าต่างสร้างและแปลงลิงก์เป็น QR Code ด้านขวา -->
+            <div class="w-full md:w-80 bg-zinc-950/80 border border-pink-500/20 rounded-xl p-4 flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-qrcode text-pink-400"></i>
+                        <h4 class="text-xs font-semibold text-pink-300 uppercase tracking-wider">สร้าง QR Code จากลิงก์</h4>
                     </div>
-                    <p class="text-[10px] text-zinc-400 leading-tight">สแกนเพื่อเปิดเว็บหัวใจของคุณ</p>
+                    <div>
+                        <label class="block text-[11px] text-zinc-400 mb-1">วางลิงก์ที่ต้องการแปลงเป็น QR Code:</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="inputCustomLink" placeholder="https://..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500">
+                            <button onclick="generateCustomQRCode()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors">สร้าง</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="w-full mt-4 space-y-2">
+                <div class="text-center bg-zinc-900/50 p-3 rounded-xl border border-zinc-800">
+                    <div class="bg-white p-2.5 rounded-lg inline-block shadow-inner mb-2">
+                        <!-- Canvas สำหรับเรนเดอร์ QR Code -->
+                        <canvas id="qrCodeCanvas" width="130" height="130" class="block"></canvas>
+                    </div>
+                    <p id="qrCodeStatusText" class="text-[10px] text-pink-300 truncate">ลิงก์การ์ดปัจจุบันของคุณ</p>
+                </div>
+
+                <div>
                     <button onclick="downloadQRCodeImage()" class="w-full py-2 bg-pink-900/40 hover:bg-pink-900/70 border border-pink-500/30 text-pink-200 rounded-xl text-xs font-medium transition-colors flex items-center justify-center space-x-1.5">
                         <i class="fa-solid fa-download"></i>
-                        <span>ดาวน์โหลดรูป QR</span>
-                    </button>
-                    <button onclick="applyCustomNames()" class="w-full py-2 bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white rounded-xl text-xs font-medium shadow-md shadow-pink-600/30 transition-all">
-                        บันทึก & สร้างหัวใจใหม่
+                        <span>ดาวน์โหลดรูป QR Code</span>
                     </button>
                 </div>
             </div>
@@ -451,23 +467,34 @@
 
         function openModal() {
             document.getElementById('customModal').classList.remove('hidden');
-            updateQRCodeDisplay();
+            const shareUrl = getShareableUrl();
+            document.getElementById('inputCustomLink').value = shareUrl;
+            renderQRCode(shareUrl, "ลิงก์การ์ดปัจจุบันของคุณ");
         }
 
         function closeModal() {
             document.getElementById('customModal').classList.add('hidden');
         }
 
-        // ฟังก์ชันสร้าง QR Code ลงบน Canvas ด้านข้าง
-        function updateQRCodeDisplay() {
-            const shareUrl = getShareableUrl();
+        // ฟังก์ชันสร้าง QR Code จากลิงก์ที่ผู้เล่นระบุ
+        function generateCustomQRCode() {
+            const customLink = document.getElementById('inputCustomLink').value.trim();
+            if (!customLink) {
+                alert("กรุณากรอกลิงก์ก่อนสร้าง QR Code");
+                return;
+            }
+            renderQRCode(customLink, "QR Code จากลิงก์ที่คุณระบุ");
+        }
+
+        // ฟังก์ชันเรนเดอร์ QR Code ลงบน Canvas
+        function renderQRCode(urlToEncode, statusText) {
             const canvas = document.getElementById('qrCodeCanvas');
             const ctx = canvas.getContext('2d');
+            const statusEl = document.getElementById('qrCodeStatusText');
 
             try {
-                // สร้าง QR code object (typeNumber 0 = auto, errorCorrectionLevel 'L')
                 const qr = qrcode(0, 'L');
-                qr.addData(shareUrl);
+                qr.addData(urlToEncode);
                 qr.make();
 
                 const moduleCount = qr.getModuleCount();
@@ -484,8 +511,10 @@
                         }
                     }
                 }
+                statusEl.innerText = statusText;
             } catch (e) {
                 console.error("QR Code generation error:", e);
+                statusEl.innerText = "เกิดข้อผิดพลาดในการสร้าง QR";
             }
         }
 
