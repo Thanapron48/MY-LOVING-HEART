@@ -80,30 +80,52 @@
             transform: translate(-50%, -50%) !important;
         }
 
-        /* โครงสร้างหลักสำหรับจัดกึ่งกลางหน้าจอเสมอ และปรับสเกลอัตโนมัติทุกอุปกรณ์ */
+        /* โครงสร้างหลักสำหรับจัดกึ่งกลางหน้าจอเสมอ และปรับสเกลอัตโนมัติทุกอุปกรณ์อย่างสมบูรณ์แบบ */
         .heart-wrapper {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             width: 100%;
-            max-width: 620px;
+            height: 100%;
+        }
+
+        #heartCanvasContainer {
+            width: 620px;
             height: 550px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             transform-origin: center center;
-            margin: auto;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
 
-        /* Responsive สำหรับมือถือ */
-        @media (max-width: 640px) {
-            .heart-wrapper {
+        /* ปรับขนาดตามหน้าจออัตโนมัติ (Responsive Scaling) ให้อยู่กึ่งกลางเป๊ะทุกอุปกรณ์ */
+        @media (max-width: 480px) {
+            #heartCanvasContainer {
+                transform: scale(0.50);
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            #heartCanvasContainer {
                 transform: scale(0.68);
             }
         }
 
-        /* Responsive สำหรับแท็บเล็ตและไอแพด */
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .heart-wrapper {
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #heartCanvasContainer {
                 transform: scale(0.85);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            #heartCanvasContainer {
+                transform: scale(1);
             }
         }
 
@@ -161,15 +183,15 @@
     </header>
 
     <!-- ส่วนแสดงผลหลัก (จัดกึ่งกลางหน้าจอสมบูรณ์แบบ) -->
-    <main class="flex-1 relative flex items-center justify-center overflow-hidden my-4 px-2">
+    <main class="flex-1 relative flex items-center justify-center overflow-hidden w-full h-[calc(100vh-140px)]">
         <div class="heart-wrapper">
-            <div id="heartCanvasContainer" class="relative w-[620px] h-[550px] flex items-center justify-center">
+            <div id="heartCanvasContainer">
                 <!-- ชื่อและข้อความหัวใจจะถูกสร้างด้วย JavaScript ตรงนี้ -->
             </div>
         </div>
 
         <!-- คำแนะนำการใช้งานด้านล่าง -->
-        <div class="absolute bottom-2 text-center pointer-events-none opacity-60 text-xs text-pink-300 tracking-wider">
+        <div class="absolute bottom-2 left-0 right-0 text-center pointer-events-none opacity-60 text-xs text-pink-300 tracking-wider z-20">
             ✨ วางเมาส์หรือแตะที่ชื่อเพื่อดูความเปล่งประกาย ✨
         </div>
     </main>
