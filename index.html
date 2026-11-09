@@ -322,6 +322,32 @@
         // โหลดข้อมูลจาก URL Parameters ถ้ามี (เมื่อเปิดลิงก์ที่แชร์มา)
         function loadParamsFromUrl() {
             const params = new URLSearchParams(window.location.search);
+            
+            // ตรวจสอบข้อมูลแบบย่อ (d = compressed data)
+            if (params.has('d')) {
+                try {
+                    const jsonStr = decodeURIComponent(atob(params.get('d')));
+                    const data = JSON.parse(jsonStr);
+                    if (data.m) {
+                        currentMainName = data.m;
+                        document.getElementById('displayTargetName').innerText = currentMainName;
+                        document.getElementById('inputMainName').value = currentMainName;
+                    }
+                    if (data.c) {
+                        currentCenterText = data.c;
+                        document.getElementById('inputCenterText').value = currentCenterText;
+                    }
+                    if (data.n && Array.isArray(data.n)) {
+                        currentNames = data.n;
+                        document.getElementById('inputNamesList').value = currentNames.join(', ');
+                    }
+                    return;
+                } catch (e) {
+                    console.error("Failed to parse compressed URL data:", e);
+                }
+            }
+
+            // รองรับรูปแบบพารามิเตอร์แบบเดิม (Backward compatibility)
             if (params.has('main')) {
                 currentMainName = decodeURIComponent(params.get('main'));
                 document.getElementById('displayTargetName').innerText = currentMainName;
@@ -436,12 +462,16 @@
                 currentNames = parsedNames;
             }
 
-            // อัปเดต URL ใน Browser โดยไมรีโหลดหน้าใหม่ พร้อมดักจับ SecurityError ในกรณีรันบน Sandboxed Blob URL
+            // สร้าง Base64 Compact Data สำหรับ URL สั้นๆ
             try {
-                const newUrl = new URL(window.location.href);
-                newUrl.searchParams.set('main', encodeURIComponent(currentMainName));
-                newUrl.searchParams.set('center', encodeURIComponent(currentCenterText));
-                newUrl.searchParams.set('names', encodeURIComponent(currentNames.join(',')));
+                const payload = {
+                    m: currentMainName,
+                    c: currentCenterText,
+                    n: currentNames
+                };
+                const compressed = btoa(encodeURIComponent(JSON.stringify(payload)));
+                const newUrl = new URL(window.location.origin + window.location.pathname);
+                newUrl.searchParams.set('d', compressed);
                 window.history.replaceState({}, '', newUrl);
             } catch (e) {
                 console.warn("History state update skipped in sandbox environment:", e);
@@ -452,10 +482,14 @@
         }
 
         function getShareableUrl() {
-            const url = new URL(window.location.href);
-            url.searchParams.set('main', encodeURIComponent(currentMainName));
-            url.searchParams.set('center', encodeURIComponent(currentCenterText));
-            url.searchParams.set('names', encodeURIComponent(currentNames.join(',')));
+            const payload = {
+                m: currentMainName,
+                c: currentCenterText,
+                n: currentNames
+            };
+            const compressed = btoa(encodeURIComponent(JSON.stringify(payload)));
+            const url = new URL(window.location.origin + window.location.pathname);
+            url.searchParams.set('d', compressed);
             return url.toString();
         }
 
