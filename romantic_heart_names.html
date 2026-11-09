@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Loving Heart - รักพี่</title>
+    <!-- Tailwind CSS สำหรับจัดสไตล์และการ Responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Kanit และ Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome สำหรับไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', 'Montserrat', sans-serif;
+            background-color: #050505;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* เอฟเฟกต์เรืองแสงนีออนสีชมพู */
+        .neon-glow-pink {
+            text-shadow: 0 0 5px #ff2a85, 0 0 10px #ff2a85, 0 0 20px #ff2a85, 0 0 40px #ff0055;
+        }
+
+        /* แอนิเมชันหัวใจเต้นสำหรับไอคอนโลโก้ */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.06); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.04); }
+            60% { transform: scale(1); }
+        }
+
+        .heart-beat {
+            animation: heartBeat 1.8s infinite ease-in-out;
+        }
+
+        /* แอนิเมชันลอยตัวเบาๆ (Floating) สำหรับชื่อในกรอบหัวใจ */
+        @keyframes floatName {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-4px) scale(1.03);
+            }
+        }
+
+        /* แอนิเมชันการปรากฏทีละชื่อเรียงตามลำดับเส้นขอบหัวใจ */
+        @keyframes appearHeart {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0px);
+            }
+        }
+
+        .name-item {
+            position: absolute;
+            animation: appearHeart 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, floatName 3s infinite ease-in-out;
+            opacity: 0;
+            transition: all 0.3s ease;
+            user-select: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .name-item:hover {
+            transform: scale(1.3) !important;
+            z-index: 50;
+            text-shadow: 0 0 15px #ffffff, 0 0 30px #ff2a85, 0 0 45px #ff0055;
+        }
+
+        /* สไตล์สำหรับข้อความตรงกลาง (อยู่นิ่ง ไม่ขยับ) */
+        .static-center {
+            animation: none !important;
+            transform: translate(-50%, -50%) !important;
+        }
+
+        /* โครงสร้างหลักสำหรับจัดกึ่งกลางหน้าจอเสมอ และปรับสเกลอัตโนมัติทุกอุปกรณ์ */
+        .heart-wrapper {
+            width: 100%;
+            max-width: 620px;
+            height: 550px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center center;
+            margin: auto;
+        }
+
+        /* Responsive สำหรับมือถือ */
+        @media (max-width: 640px) {
+            .heart-wrapper {
+                transform: scale(0.68);
+            }
+        }
+
+        /* Responsive สำหรับแท็บเล็ตและไอแพด */
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .heart-wrapper {
+                transform: scale(0.85);
+            }
+        }
+
+        /* ปรับแต่ง Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff2a85;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative bg-black text-white selection:bg-pink-500 selection:text-white">
+
+    <!-- พื้นหลังแสงเรืองแสงบรรยากาศโรแมนติก -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-900/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- ส่วนหัว (Header & ควบคุมระบบ) -->
+    <header class="w-full p-4 md:p-6 flex flex-col sm:flex-row justify-between items-center z-20 gap-4 bg-black/40 backdrop-blur-md border-b border-pink-500/10">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-600 to-red-500 flex items-center justify-center shadow-lg shadow-pink-500/30 heart-beat">
+                <i class="fa-solid fa-heart text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-wider bg-gradient-to-r from-pink-400 via-rose-300 to-red-500 bg-clip-text text-transparent neon-glow-pink">
+                    MY LOVING HEART
+                </h1>
+                <p class="text-xs text-pink-300/70">หัวใจดวงนี้มอบให้ <span id="displayTargetName" class="font-semibold text-pink-200">พี่สุดที่รัก</span></p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- ปุ่มเปิด/ปิดเสียงเพลง -->
+            <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center space-x-2 bg-pink-950/60 hover:bg-pink-900/80 border border-pink-500/30 px-4 py-2 rounded-full text-sm transition-all shadow-md shadow-pink-900/20">
+                <i id="musicIcon" class="fa-solid fa-music text-pink-400 animate-pulse"></i>
+                <span id="musicText">เปิดเพลงโรแมนติก</span>
+            </button>
+
+            <!-- ปุ่มแชร์ให้คนที่รัก (คัดลอกลิงก์ตรง) -->
+            <button onclick="copyShareLinkDirect()" id="shareDirectBtn" class="flex items-center space-x-2 bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 px-4 py-2 rounded-full text-sm transition-all shadow-md shadow-rose-900/20 text-rose-200">
+                <i class="fa-solid fa-share-nodes text-rose-400"></i>
+                <span class="hidden sm:inline">แชร์ให้คนที่รัก</span>
+            </button>
+
+            <!-- ปุ่มเปิดเมนูปรับแต่ง -->
+            <button onclick="openModal()" class="flex items-center space-x-2 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-pink-600/30">
+                <i class="fa-solid fa-pen-nib"></i>
+                <span>เปลี่ยนชื่อ / เพิ่มคำ</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ส่วนแสดงผลหลัก (จัดกึ่งกลางหน้าจอสมบูรณ์แบบ) -->
+    <main class="flex-1 relative flex items-center justify-center overflow-hidden my-4 px-2">
+        <div class="heart-wrapper">
+            <div id="heartCanvasContainer" class="relative w-[620px] h-[550px] flex items-center justify-center">
+                <!-- ชื่อและข้อความหัวใจจะถูกสร้างด้วย JavaScript ตรงนี้ -->
+            </div>
+        </div>
+
+        <!-- คำแนะนำการใช้งานด้านล่าง -->
+        <div class="absolute bottom-2 text-center pointer-events-none opacity-60 text-xs text-pink-300 tracking-wider">
+            ✨ วางเมาส์หรือแตะที่ชื่อเพื่อดูความเปล่งประกาย ✨
+        </div>
+    </main>
+
+    <!-- ส่วนท้าย (Footer) -->
+    <footer class="w-full py-4 text-center text-xs text-pink-400/60 border-t border-pink-500/10 bg-black/40 backdrop-blur-md z-20">
+        Made with love ❤️ | สลักชื่อคนสำคัญของคุณไว้ในหัวใจดวงนี้ตลอดไป
+    </footer>
+
+    <!-- หน้าต่างป๊อปอัปสำหรับปรับแต่งข้อมูล -->
+    <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-zinc-900 border border-pink-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl shadow-pink-600/20 relative animate-[fadeIn_0.3s_ease-out]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-8 h-8 rounded-full bg-pink-600/30 flex items-center justify-center text-pink-400">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h3 class="text-lg font-bold text-pink-300">ปรับแต่งชื่อและข้อความ</h3>
+            </div>
+
+            <p class="text-xs text-zinc-400 mb-4">
+                ปรับเปลี่ยนชื่อหัวข้อ ข้อความนิ่งตรงกลาง และรายการคำบอกรักในกรอบหัวใจได้ตามต้องการ
+            </p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-pink-300 mb-1">ชื่อหลักของคนรัก (แสดงที่หัวข้อ)</label>
+                    <input type="text" id="inputMainName" value="พี่สุดที่รัก" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-pink-300 mb-1">ข้อความตรงกลาง (นิ่ง ไม่ขยับ)</label>
+                    <input type="text" id="inputCenterText" value="รักพี่" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-pink-300 mb-1">รายการคำ/ชื่อเรียงกรอบหัวใจ (คั่นด้วย ,)</label>
+                    <textarea id="inputNamesList" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors resize-none">ตะวัน, ดวงใจ, My Love, Forever, You & Me, คนดี, ที่รัก, รักที่สุด, Soulmate, Baby, Honey, My Heart, ดวงหทัย, หวานใจ, พรหมลิขิต, แฟน, ความสุข, รอยยิ้ม, ไออุ่น, นิรันดร์, ดวงชีวัน, เจ้าหญิง, เจ้าชาย, ดวงแก้ว, ดวงฤทัย, น่ารัก, กอดอุ่น, ดวงกมล, ซือปู, องุ่น, มิว, โอม</textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors">
+                        ยกเลิก
+                    </button>
+                    <button onclick="applyCustomNames()" class="px-5 py-2 rounded-xl text-sm bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white font-medium shadow-lg shadow-pink-600/30 transition-all">
+                        บันทึก & สร้างหัวใจใหม่
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Web Audio API Generator for Romantic Music Box Melody (No external asset dependency) -->
+    <script>
+        let audioCtx = null;
+        let isPlayingMusic = false;
+        let musicInterval = null;
+
+        function playTone() {
+            if (!isPlayingMusic) return;
+            try {
+                if (!audioCtx || audioCtx.state === 'closed') {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                // โน้ตเพลงกล่องดนตรี (Pentatonic scale โทนหวานฟังสบาย)
+                const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50];
+                const freq = notes[Math.floor(Math.random() * notes.length)];
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1.2);
+            } catch (e) {
+                console.debug("Audio context note play prevented:", e);
+            }
+        }
+
+        function toggleMusic() {
+            const btnText = document.getElementById('musicText');
+            const musicIcon = document.getElementById('musicIcon');
+            
+            if (!isPlayingMusic) {
+                isPlayingMusic = true;
+                btnText.innerText = "ปิดเพลงโรแมนติก";
+                musicIcon.className = "fa-solid fa-volume-high text-pink-400 animate-bounce";
+                
+                playTone();
+                musicInterval = setInterval(playTone, 450);
+            } else {
+                isPlayingMusic = false;
+                btnText.innerText = "เปิดเพลงโรแมนติก";
+                musicIcon.className = "fa-solid fa-music text-pink-400 animate-pulse";
+                if (musicInterval) clearInterval(musicInterval);
+                if (audioCtx && audioCtx.state !== 'closed') {
+                    audioCtx.close();
+                    audioCtx = null;
+                }
+            }
+        }
+    </script>
+
+    <!-- ส่วนสร้างกรอบหัวใจและควบคุมข้อมูล -->
+    <script>
+        let currentNames = [
+            "ตะวัน", "ดวงใจ", "My Love", "Forever", "You & Me", 
+            "คนดี", "ที่รัก", "รักที่สุด", "Soulmate", "Baby", 
+            "Honey", "My Heart", "ดวงหทัย", "หวานใจ", "พรหมลิขิต", 
+            "แฟน", "ความสุข", "รอยยิ้ม", "ไออุ่น", "นิรันดร์", 
+            "ดวงชีวัน", "เจ้าหญิง", "เจ้าชาย", "ดวงแก้ว", "ดวงฤทัย", 
+            "น่ารัก", "กอดอุ่น", "ดวงกมล", "ซือปู", "องุ่น", "มิว", "โอม"
+        ];
+        let currentCenterText = "รักพี่";
+        let currentMainName = "พี่สุดที่รัก";
+
+        // โหลดข้อมูลจาก URL Parameters ถ้ามี (เมื่อเปิดลิงก์ที่แชร์มา)
+        function loadParamsFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('main')) {
+                currentMainName = decodeURIComponent(params.get('main'));
+                document.getElementById('displayTargetName').innerText = currentMainName;
+                document.getElementById('inputMainName').value = currentMainName;
+            }
+            if (params.has('center')) {
+                currentCenterText = decodeURIComponent(params.get('center'));
+                document.getElementById('inputCenterText').value = currentCenterText;
+            }
+            if (params.has('names')) {
+                const namesStr = decodeURIComponent(params.get('names'));
+                const list = namesStr.split(',').map(n => n.trim()).filter(n => n.length > 0);
+                if (list.length > 0) {
+                    currentNames = list;
+                    document.getElementById('inputNamesList').value = list.join(', ');
+                }
+            }
+        }
+
+        // ฟังก์ชันคำนวณและสร้างชื่อเรียงเป็นกรอบรูปหัวใจ
+        function generateHeartNames() {
+            const container = document.getElementById('heartCanvasContainer');
+            container.innerHTML = ''; // ล้างค่าเก่าออกก่อนสร้างใหม่
+
+            const totalPoints = 140; // จำนวนชื่อที่จะเรียงตามเส้นขอบ
+            
+            for (let i = 0; i < totalPoints; i++) {
+                const t = (i / totalPoints) * 2 * Math.PI;
+
+                // สูตรสมการพารามิเตอร์รูปหัวใจทางคณิตศาสตร์
+                let hx = 16 * Math.pow(Math.sin(t), 3);
+                let hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+
+                const scale = 17.5;
+                const posX = 310 + (hx * scale);
+                const posY = 275 + (hy * scale);
+
+                const nameText = currentNames[i % currentNames.length];
+
+                const span = document.createElement('span');
+                span.className = 'name-item';
+                span.innerText = nameText;
+
+                const fontSize = 13 + (i % 4);
+                
+                const colors = [
+                    '#ff2a85', '#ff4d94', '#ff1e56', '#ff739d', 
+                    '#ffffff', '#ff99bb', '#ff3366', '#ffc2d6'
+                ];
+                const textColor = colors[i % colors.length];
+
+                span.style.left = `${posX}px`;
+                span.style.top = `${posY}px`;
+                span.style.fontSize = `${fontSize}px`;
+                span.style.color = textColor;
+                span.style.fontWeight = '700';
+                
+                // กำหนดดีเลย์แอนิเมชันให้ชื่อค่อยๆ วิ่งเรียงต่อกันทีละตัว
+                const appearDelay = i * 0.035;
+                span.style.animationDelay = `${appearDelay}s, ${(3 + Math.random() * 2).toFixed(2)}s`;
+
+                container.appendChild(span);
+            }
+
+            // เพิ่มข้อความตรงกลาง (นิ่งสนิท ไม่ขยับ)
+            const centerBox = document.createElement('div');
+            centerBox.className = 'absolute flex flex-col items-center justify-center z-30 static-center pointer-events-none';
+            centerBox.style.left = '310px';
+            centerBox.style.top = '275px';
+
+            centerBox.innerHTML = `
+                <div class="relative flex items-center justify-center px-6 py-3 bg-black/60 backdrop-blur-md rounded-2xl border border-pink-500/40 shadow-[0_0_25px_rgba(255,42,133,0.3)]">
+                    <span class="relative text-white font-extrabold text-xl md:text-2xl tracking-wider neon-glow-pink select-none">${escapeHtml(currentCenterText)}</span>
+                </div>
+            `;
+            container.appendChild(centerBox);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function openModal() {
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        // ฟังก์ชันบันทึกค่าที่ผู้ใช้ปรับแต่งผ่านหน้าต่างป๊อปอัป (กลับมาหน้ากรอบหัวใจทันที ไม่เปิดป๊อปอัปแชร์อัตโนมัติ)
+        function applyCustomNames() {
+            const mainNameInput = document.getElementById('inputMainName').value.trim();
+            const centerTextInput = document.getElementById('inputCenterText').value.trim();
+            const namesListInput = document.getElementById('inputNamesList').value;
+
+            if (mainNameInput) {
+                currentMainName = mainNameInput;
+                document.getElementById('displayTargetName').innerText = currentMainName;
+            }
+
+            if (centerTextInput) {
+                currentCenterText = centerTextInput;
+            }
+
+            const parsedNames = namesListInput
+                .split(/[\n,]+/)
+                .map(n => n.trim())
+                .filter(n => n.length > 0);
+
+            if (parsedNames.length > 0) {
+                currentNames = parsedNames;
+            }
+
+            // อัปเดต URL ใน Browser โดยไมรีโหลดหน้าใหม่ พร้อมดักจับ SecurityError ในกรณีรันบน Sandboxed Blob URL
+            try {
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('main', encodeURIComponent(currentMainName));
+                newUrl.searchParams.set('center', encodeURIComponent(currentCenterText));
+                newUrl.searchParams.set('names', encodeURIComponent(currentNames.join(',')));
+                window.history.replaceState({}, '', newUrl);
+            } catch (e) {
+                console.warn("History state update skipped in sandbox environment:", e);
+            }
+
+            generateHeartNames();
+            closeModal();
+        }
+
+        function getShareableUrl() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('main', encodeURIComponent(currentMainName));
+            url.searchParams.set('center', encodeURIComponent(currentCenterText));
+            url.searchParams.set('names', encodeURIComponent(currentNames.join(',')));
+            return url.toString();
+        }
+
+        // ฟังก์ชันคัดลอกลิงก์ตรงเมื่อกดปุ่มแชร์
+        function copyShareLinkDirect() {
+            const shareUrl = getShareableUrl();
+            const btn = document.getElementById('shareDirectBtn');
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showDirectCopySuccess(btn);
+                }).catch(() => {
+                    fallbackDirectCopy(shareUrl, btn);
+                });
+            } else {
+                fallbackDirectCopy(shareUrl, btn);
+            }
+        }
+
+        function fallbackDirectCopy(text, btn) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showDirectCopySuccess(btn);
+            } catch (err) {
+                alert("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาคัดลอกลิงก์จาก Address bar ด้านบน");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showDirectCopySuccess(btn) {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> คัดลอกลิงก์สำเร็จ!`;
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 2500);
+        }
+
+        window.onload = function() {
+            loadParamsFromUrl();
+            generateHeartNames();
+        };
+    </script>
+</body>
+</html>
