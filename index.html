@@ -493,21 +493,33 @@
             const statusEl = document.getElementById('qrCodeStatusText');
 
             try {
-                const qr = qrcode(0, 'L');
+                // ใช้ error correction ระดับ M และ type แบบ auto เพื่อความแม่นยำในการสแกน
+                const qr = qrcode(4, 'M');
                 qr.addData(urlToEncode);
                 qr.make();
 
                 const moduleCount = qr.getModuleCount();
-                const tileSize = canvas.width / moduleCount;
+                const canvasSize = 150;
+                canvas.width = canvasSize;
+                canvas.height = canvasSize;
+                
+                const tileSize = canvasSize / moduleCount;
 
+                // ล้างพื้นหลังสีขาวสะอาด
                 ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, canvasSize, canvasSize);
 
                 ctx.fillStyle = '#000000';
                 for (let row = 0; row < moduleCount; row++) {
                     for (let col = 0; col < moduleCount; col++) {
                         if (qr.isDark(row, col)) {
-                            ctx.fillRect(col * tileSize, row * tileSize, tileSize + 0.5, tileSize + 0.5);
+                            // วาดพิกเซลให้พอดีเป๊ะ ป้องกันรอยต่อซ้อนทับกันที่ทำให้กล้องสแกนไม่เจอ
+                            ctx.fillRect(
+                                Math.floor(col * tileSize), 
+                                Math.floor(row * tileSize), 
+                                Math.ceil(tileSize), 
+                                Math.ceil(tileSize)
+                            );
                         }
                     }
                 }
