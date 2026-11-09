@@ -203,49 +203,68 @@
 
     <!-- หน้าต่างป๊อปอัปสำหรับปรับแต่งข้อมูล -->
     <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-zinc-900 border border-pink-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl shadow-pink-600/20 relative animate-[fadeIn_0.3s_ease-out]">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-lg">
+        <div class="bg-zinc-900 border border-pink-500/30 rounded-2xl max-w-2xl w-full p-6 shadow-2xl shadow-pink-600/20 relative animate-[fadeIn_0.3s_ease-out] flex flex-col md:flex-row gap-6">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white text-lg z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-8 h-8 rounded-full bg-pink-600/30 flex items-center justify-center text-pink-400">
-                    <i class="fa-solid fa-heart"></i>
+            <!-- ฟอร์มตั้งค่าด้านซ้าย -->
+            <div class="flex-1 space-y-4">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-pink-600/30 flex items-center justify-center text-pink-400">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-pink-300">ปรับแต่งชื่อและข้อความ</h3>
                 </div>
-                <h3 class="text-lg font-bold text-pink-300">ปรับแต่งชื่อและข้อความ</h3>
+
+                <p class="text-xs text-zinc-400 mb-2">
+                    ปรับเปลี่ยนชื่อหัวข้อ ข้อความนิ่งตรงกลาง และรายการคำบอกรักในกรอบหัวใจ
+                </p>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-pink-300 mb-1">ชื่อหลักของคนรัก (แสดงที่หัวข้อ)</label>
+                        <input type="text" id="inputMainName" value="พี่สุดที่รัก" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-pink-300 mb-1">ข้อความตรงกลาง (นิ่ง ไม่ขยับ)</label>
+                        <input type="text" id="inputCenterText" value="รักพี่" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-pink-300 mb-1">รายการคำ/ชื่อเรียงกรอบหัวใจ (คั่นด้วย ,)</label>
+                        <textarea id="inputNamesList" rows="3" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors resize-none">ตะวัน, ดวงใจ, My Love, Forever, You & Me, คนดี, ที่รัก, รักที่สุด, Soulmate, Baby, Honey, My Heart, ดวงหทัย, หวานใจ, พรหมลิขิต, แฟน, ความสุข, รอยยิ้ม, ไออุ่น, นิรันดร์, ดวงชีวัน, เจ้าหญิง, เจ้าชาย, ดวงแก้ว, ดวงฤทัย, น่ารัก, กอดอุ่น, ดวงกมล, ซือปู, องุ่น, มิว, โอม</textarea>
+                    </div>
+                </div>
             </div>
 
-            <p class="text-xs text-zinc-400 mb-4">
-                ปรับเปลี่ยนชื่อหัวข้อ ข้อความนิ่งตรงกลาง และรายการคำบอกรักในกรอบหัวใจได้ตามต้องการ
-            </p>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-pink-300 mb-1">ชื่อหลักของคนรัก (แสดงที่หัวข้อ)</label>
-                    <input type="text" id="inputMainName" value="พี่สุดที่รัก" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
+            <!-- หน้าต่างสร้าง QR Code ด้านขวา -->
+            <div class="w-full md:w-64 bg-zinc-950/80 border border-pink-500/20 rounded-xl p-4 flex flex-col items-center justify-between">
+                <div class="text-center w-full">
+                    <h4 class="text-xs font-semibold text-pink-300 mb-2 uppercase tracking-wider">QR Code สำหรับแชร์</h4>
+                    <div class="bg-white p-3 rounded-xl inline-block shadow-inner mb-3">
+                        <!-- Canvas สำหรับเรนเดอร์ QR Code -->
+                        <canvas id="qrCodeCanvas" width="140" height="140" class="block"></canvas>
+                    </div>
+                    <p class="text-[10px] text-zinc-400 leading-tight">สแกนเพื่อเปิดเว็บหัวใจของคุณ</p>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-medium text-pink-300 mb-1">ข้อความตรงกลาง (นิ่ง ไม่ขยับ)</label>
-                    <input type="text" id="inputCenterText" value="รักพี่" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-pink-300 mb-1">รายการคำ/ชื่อเรียงกรอบหัวใจ (คั่นด้วย ,)</label>
-                    <textarea id="inputNamesList" rows="4" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors resize-none">ตะวัน, ดวงใจ, My Love, Forever, You & Me, คนดี, ที่รัก, รักที่สุด, Soulmate, Baby, Honey, My Heart, ดวงหทัย, หวานใจ, พรหมลิขิต, แฟน, ความสุข, รอยยิ้ม, ไออุ่น, นิรันดร์, ดวงชีวัน, เจ้าหญิง, เจ้าชาย, ดวงแก้ว, ดวงฤทัย, น่ารัก, กอดอุ่น, ดวงกมล, ซือปู, องุ่น, มิว, โอม</textarea>
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors">
-                        ยกเลิก
+                <div class="w-full mt-4 space-y-2">
+                    <button onclick="downloadQRCodeImage()" class="w-full py-2 bg-pink-900/40 hover:bg-pink-900/70 border border-pink-500/30 text-pink-200 rounded-xl text-xs font-medium transition-colors flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-download"></i>
+                        <span>ดาวน์โหลดรูป QR</span>
                     </button>
-                    <button onclick="applyCustomNames()" class="px-5 py-2 rounded-xl text-sm bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white font-medium shadow-lg shadow-pink-600/30 transition-all">
+                    <button onclick="applyCustomNames()" class="w-full py-2 bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white rounded-xl text-xs font-medium shadow-md shadow-pink-600/30 transition-all">
                         บันทึก & สร้างหัวใจใหม่
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- โหลดไลบรารี QRCode.js สำหรับสร้างคิวอาร์โค้ด -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
     <!-- Web Audio API Generator for Romantic Music Box Melody (No external asset dependency) -->
     <script>
@@ -432,13 +451,54 @@
 
         function openModal() {
             document.getElementById('customModal').classList.remove('hidden');
+            updateQRCodeDisplay();
         }
 
         function closeModal() {
             document.getElementById('customModal').classList.add('hidden');
         }
 
-        // ฟังก์ชันบันทึกค่าที่ผู้ใช้ปรับแต่งผ่านหน้าต่างป๊อปอัป (กลับมาหน้ากรอบหัวใจทันที ไม่เปิดป๊อปอัปแชร์อัตโนมัติ)
+        // ฟังก์ชันสร้าง QR Code ลงบน Canvas ด้านข้าง
+        function updateQRCodeDisplay() {
+            const shareUrl = getShareableUrl();
+            const canvas = document.getElementById('qrCodeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            try {
+                // สร้าง QR code object (typeNumber 0 = auto, errorCorrectionLevel 'L')
+                const qr = qrcode(0, 'L');
+                qr.addData(shareUrl);
+                qr.make();
+
+                const moduleCount = qr.getModuleCount();
+                const tileSize = canvas.width / moduleCount;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * tileSize, row * tileSize, tileSize + 0.5, tileSize + 0.5);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("QR Code generation error:", e);
+            }
+        }
+
+        // ฟังก์ชันดาวน์โหลดรูปภาพ QR Code
+        function downloadQRCodeImage() {
+            const canvas = document.getElementById('qrCodeCanvas');
+            const link = document.createElement('a');
+            link.download = 'my-loving-heart-qr.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // ฟังก์ชันบันทึกค่าที่ผู้ใช้ปรับแต่งผ่านหน้าต่างป๊อปอัป (กลับมาหน้ากรอบหัวใจทันที)
         function applyCustomNames() {
             const mainNameInput = document.getElementById('inputMainName').value.trim();
             const centerTextInput = document.getElementById('inputCenterText').value.trim();
